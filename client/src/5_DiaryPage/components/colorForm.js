@@ -42,7 +42,7 @@ const ColorForm = () => {
   return (
     <>
       <WhiteContainer>
-        <p className="titleText">오늘의 기분을 색으로 표현해 주세요!</p>
+        <p className="titleText">오늘의 기분은 무슨 색인가요?</p>
         <div className="colorWrap">
           {color.map((item) => (
             <ColorBox key={item.id}>
@@ -58,31 +58,23 @@ const ColorForm = () => {
 export default ColorForm;
 
 const WhiteContainer = styled.div`
-  width: 560px;
-  height: 126px;
-  position: relative;
+  width: 676px;
+  height: 106px;
   background-color: white;
-  text-align: center;
   display: inline-block;
-  margin-left: 130px;
-  margin-bottom: 50px;
+  margin: 0 auto;
   font-family: 'SB 어그로 L';
 
-  & .colorWrap {
-    background-color: white;
-    width: 560px;
-    height: 80px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  &.titleText{
+  & .titleText {
     text-align: center;
     margin-top: 25px;
-    margin-left: 30px;
-    position: absolute;
-    display: block;
+  }
 
+  & .colorWrap {
+    width: 75%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
   }
 `
 

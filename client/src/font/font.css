@@ -8,8 +8,16 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'SB 어그로 L';
+  src: url('../font/SB\ 어그로\ L.ttf');
+}
+
+@font-face {
+  font-family: 'SB 어그로 M';
+  src: url('../font/SB\ 어그로\ M.ttf');
+}
+
 .fonnt{
     font-family: 'LeferiPoint-BlackA';
-    
-    
 }

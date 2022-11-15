@@ -9,16 +9,15 @@ const Fourpage = () => {
   return (
     <>
       <Layout>
-        <Todobox>
-          <ListWrap>
-            <TodoListForm/>
-            <BurketListForm/>
-          </ListWrap>
-        </Todobox>
+        <ListWrap>
+          <TodoListForm/>
+          <BurketListForm/>
+        </ListWrap>
       </Layout>
     </>
   )
-};
+}
+
 export default Fourpage;
 
 
@@ -27,15 +26,4 @@ const ListWrap = styled.div`
   height: auto;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 50px;
-  /* background-color: blueviolet; */
-`
-
-const Todobox = styled.div`
-  width: 1200px;
-  /* background-color: cadetblue; */
-  height: 600px;
-  top: 200px;
-  display: flex;
-  position: relative;
 `

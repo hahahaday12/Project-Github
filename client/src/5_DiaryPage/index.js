@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import DiaryForm from "./components/diaryForm";
 import Layout from "../Layout/layout"
 import ColorForm from "./components/colorForm";
@@ -10,21 +9,14 @@ const Fivepage = () => {
   return (
     <>
       <Layout>
-        <DiaryContainer>
-          <ColorForm/>
-          <DiaryForm/>
-          <DiaryReadTitle/>
-        </DiaryContainer>
+        <ColorForm/>
+        <DiaryForm/>
+        <DiaryReadTitle/>
       </Layout>
     </>
   )
-};
-export default Fivepage;
+}
 
-const DiaryContainer = styled.div`
-  width: 800px;
-  height: 920px;
-  /* background-color: yellowgreen; */
-  position: relative;
-  top: 140px;
-`
+    
+
+export default Fivepage;

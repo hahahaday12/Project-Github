@@ -91,7 +91,6 @@ const WhiteContainer = styled.div`
   margin: 0 auto;
   background-color: white;
   overflow: hidden;
-  margin-top: 50px;
 
   & .sliderWrap {
     margin: 0 auto;
