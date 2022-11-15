@@ -1,85 +1,28 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPen } from "@fortawesome/free-solid-svg-icons";
-import { useState } from 'react';
-import axios from 'axios';
 
 
 const DiaryForm = () => {
-
-  const [Viewtitle, setViewTitle] = useState({
-    id:"",
-    title:"",
-    content:"",
-    date:"",
-    color:""
-  })
-
-  const [viewContent, setViewContent] = useState([]);
-
-
-  const getValue = e => {
-    const{name, value} = e.target;
-    console.log(name,value);
-    setViewTitle({
-      ...Viewtitle,
-      [name]: value
-    })
-    console.log('제목이 쓰입니다');
-  };
-
-
-  const submit = () => {
-    axios.post('http://kai.dahyeon.us:10200/todo', {
-      title: Viewtitle.title,
-      content: Viewtitle.content
-    }).then(() => {
-      alert('완료');
-    })
-  };
-
-
-
-  const Content = e => {
-    const{name, value} = e.target;
-    console.log(name, value);
-    setViewContent({
-      ...viewContent,
-      [name]: value
-    })
-    console.log('내용이 쓰이고 있습니다.')
-  }
-
   return (
     <>
       <ContainerOutBox>
         
         <PostTitle>
           <p>2022.10.10</p>
-
           <div className="inputBox">
-            <input className='title-input'
-              type="text"
-              placeholder="제목을 작성해주세요"
-              onChange={getValue}
-              name='title'
+            <input
+              type={"text"}
+              placeholder={"제목을 작성해주세요"}
             />
           </div>
-
-          {/* <FontAwesomeIcon className="penIcon" icon={faPen}/> */}
-        <button className='submit-button'
-         onClick={submit} 
-        >등록</button>
-
+          <FontAwesomeIcon className="penIcon" icon={faPen}/>
         </PostTitle>
 
         <WriteInnerBox>
           <PostForm>
             <textarea
-              type="text"
-              placeholder="일기내용을 작성해주세요"
-              onChange={Content}
-              name='content'
+              placeholder={"일기내용을 작성해주세요"}
             />
           </PostForm>
         </WriteInnerBox>
@@ -93,8 +36,8 @@ export default DiaryForm;
 
 const ContainerOutBox = styled.div`
   max-width: 676px;
-  max-height: 400PX;
-  margin: 0 auto;
+  max-height: 424PX;
+  margin: 30px 0 20px 0;
   border-radius: 15px;
   background-color: #C4C4C4;
   justify-content: center;
@@ -146,8 +89,8 @@ const PostTitle = styled.div`
 
 const WriteInnerBox = styled.div`
   width: 100%;
-  height: 260px;
-  /* background-color: black; */
+  height: 313px;
+  background-color: white;
   border-radius: 10px;
   margin: 0 auto;
 `
@@ -161,7 +104,7 @@ const PostForm = styled.form`
   & textarea {
     resize: none;
     width: 95%;
-    height: 190px;
+    height: 240px;
     font-family: 'SB 어그로 L';
     border: none;
     padding: 15px 15px;

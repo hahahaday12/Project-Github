@@ -5,7 +5,7 @@ const UserName = ({ users }) => {
     console.log(users)
     return (
       <Userbox>
-      <P>💕{users}님 환영합니다.</P>
+        <P>💕{users}님 환영합니다.</P>
       </Userbox>
     );
 };
@@ -18,13 +18,9 @@ const Userbox = styled.div`
   background-color: white;
   font-size: 40px;
   display: flex;
-  position: relative;
-  text-align: center;
-  left: 140px;
 `
 const P = styled.div`
-  width: 600px;
-  text-align: center;
   font-size: 30px;
   font-family: "Gaegu", serif;
+  margin: 0 auto;
 `
