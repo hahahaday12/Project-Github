@@ -9,14 +9,21 @@ const Fivepage = () => {
   return (
     <>
       <Layout>
+        <DiaryContainer>
         <ColorForm/>
         <DiaryForm/>
-        <DiaryReadTitle/>
+        {/* <DiaryReadTitle/> */}
+        </DiaryContainer>
       </Layout>
     </>
   )
-}
-
-    
-
+};
 export default Fivepage;
+
+const DiaryContainer = styled.div`
+  width: 800px;
+  height: 920px;
+  //background-color: yellowgreen;
+  position: relative;
+  left: 50px;
+`
