@@ -1,55 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Color } from "../../resource/color.js"
+import { useRecoilState } from "recoil";
+import { recoilColorState } from "../../recoil/recoilColorState";
+
 
 const ColorForm = () => {
 
+  // atom 이름 가져오기
+  const [recoilColor, setRecoilColor] = useRecoilState(recoilColorState);
+  const defaultColor = { ...recoilColor }; //가져온 recoilColor 불변성
+  
+  const colorArray = Object.values(Color);  //values값 배열화 [색상코드들]
+  const colorNameArray = Object.keys(Color);  //keys값 배열화 [색이름들]
 
-// 현재는 임시로
-// 공통으로 쓰일 color 데이터는 recoil로 전역으로 관리할 예정
-  const [color,setColor] = useState([
-    {
-      id: 10,
-      data: "pink",
-      color: "#FFCCCC",
-      text: "설렘",
-    },
-    {
-      id: 11,
-      data: "blue",
-      color: "#7A90E2",
-      text: "슬픔",
-    },
-    {
-      id: 12,
-      data: "yellow",
-      color: "#FFDF78",
-      text: "기쁨",
-    },
-    {
-      id: 13,
-      data: "red",
-      color: "#E5636F",
-      text: "화남",
-    },
-    {
-      id: 14,
-      data: "gray",
-      color: "#C4C4C4",
-      text: "무기력",
-    },
-  ])
+  const [colorState, setColorState] = useState(defaultColor.color);
+  // 복사한 recoilColor 객체의 color값 useState의 기본값으로 지정
+  
+  const onColorChangeHandler = (color) => {
+    setColorState(color);
+    console.log(color);
+  };
+
+  useEffect(() => {
+    const changedColor = {
+      color: colorState
+    };
+    setRecoilColor(changedColor);
+  }, [colorState]);
 
   return (
     <>
       <WhiteContainer>
         <p className="titleText">오늘의 기분은 무슨 색인가요?</p>
-        <div className="colorWrap">
-          {color.map((item) => (
-            <ColorBox key={item.id}>
-              <div style={{backgroundColor: item.color}}/> {item.text}
-            </ColorBox>
-          ))}
-        </div>
+          <ColorPallete>
+            {colorArray.map((color, index) => (
+              <ColorCircle key={color} background={color}>
+                <label for={color}></label>
+                <input
+                  type="radio"
+                  id={color}
+                  checked={colorState === color}
+                  onChange={() => onColorChangeHandler(color, index)}
+                />
+                <p>{colorNameArray[index]}</p>
+              </ColorCircle>
+            ))}
+          </ColorPallete>
       </WhiteContainer>
     </>
   )
@@ -59,7 +56,7 @@ export default ColorForm;
 
 const WhiteContainer = styled.div`
   width: 676px;
-  height: 106px;
+  height: 110px;
   background-color: white;
   display: inline-block;
   margin: 0 auto;
@@ -67,26 +64,38 @@ const WhiteContainer = styled.div`
 
   & .titleText {
     text-align: center;
-    margin-top: 25px;
-  }
-
-  & .colorWrap {
-    width: 75%;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
+    margin-top: 15px;
   }
 `
 
-const ColorBox = styled.div`
+const ColorPallete = styled.ul`
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  gap: 30px;
+`;
+
+const ColorCircle = styled.li`
+  list-style-type: none;
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #C4C4C4;
-  
-  & div {
+
+  & > label {
+    display: inline-block;
+    background-color: ${(props) => props.background};
     width: 30px;
     height: 30px;
-    border-radius: 30px;
+    border-radius: 100%;
+    cursor: pointer;
+    transition: all 0.25s;
   }
-`
+
+  & > label:hover {
+    transform: scale(1.15);
+  }
+
+  & > input {
+    display: none;
+  }
+`;

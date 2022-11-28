@@ -1,19 +1,28 @@
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons"
-import { useState, forwardRef, useEffect} from 'react';
-import axios from 'axios';
-import DatePicker from "react-datepicker";
+import Slider from "react-slick";
 import "react-datepicker/dist/react-datepicker.css";
-import './diary.css'
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import Slider from "react-slick";
-import {API_URL} from '../../Common/Common'
+import DatePicker from "react-datepicker";
+import axios from 'axios';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleArrowLeft, faCircleCheck, faXmark } from "@fortawesome/free-solid-svg-icons"
+import { useState, forwardRef, useEffect} from 'react';
+import { API_URL } from '../../service/Common'
+import { recoilColorState } from "../../recoil/recoilColorState";
+import { useRecoilState } from "recoil";
+// import './diary.css'
+
 
 const DiaryForm = () => {
+
+  // colorPeeker
+  const [recoilColor, setRecoilColor] = useRecoilState(recoilColorState);
+  const defaultColor = { ...recoilColor };
+
+  const [colorPeeker, setColorPeeker] = useState(defaultColor.color);
+
+  
   //false 새글정보 
   //true 수정정보 
   const [btnStatus, setBtnStatus] = useState(false);
@@ -35,6 +44,12 @@ const DiaryForm = () => {
     })
     search();
   },[])
+
+  // colorPeeker
+  useEffect(() => {
+    const tmpColor = { ...recoilColor };
+    setColorPeeker(tmpColor.color);
+  },[recoilColor]);
 
   const search = () => {
     axios.get(API_URL+ '/diary').then((response) => {
@@ -109,7 +124,6 @@ const DiaryForm = () => {
     }
   };
 
-
   const Removediary = (idx) => {
     window.confirm("삭제하시겠습니까?");
     axios.delete(API_URL +'/diary/' + idx,{
@@ -128,15 +142,16 @@ const DiaryForm = () => {
     console.log("박스클릭" + JSON.stringify(item));
     if(ViewData.id !== item._id){
       setViewData({
-           title : item.title
-          ,content : item.content
-          ,color : item.color
-          ,id : item._id
-          ,date : new Date(item.date)
+        title : item.title
+        ,content : item.content
+        ,color : item.color
+        ,id : item._id
+        ,date : new Date(item.date)
       })
       setBtnStatus(true);
   }
 };
+
 // 슬라이드 세팅값
   const settings = {
     dots: true,
@@ -150,7 +165,7 @@ const DiaryForm = () => {
   return (
     <>
     <AllDiaryBox>
-      <DiaryContainer style={{backgroundColor: ViewData.color}}>
+      <DiaryContainer background={colorPeeker}>
         <PostTitle>
           <Datebox>
             <DatePicker
@@ -244,7 +259,7 @@ const DiaryContainer = styled.div`
   max-height: 400PX;
   margin: 0 auto;
   border-radius: 15px;
-  background-color: #7A90E2;
+  background-color: ${(props) => props.background};
   //background-color: red;
   //background-color: ${(props) => props.color};
   justify-content: center;

@@ -2,6 +2,7 @@ import DiaryForm from "./components/diaryForm";
 import Layout from "../Layout/layout"
 import ColorForm from "./components/colorForm";
 import DiaryReadTitle from "./components/diaryReadTitle";
+import styled from "styled-components";
 
 const Fivepage = () => {
 
