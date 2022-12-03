@@ -7,11 +7,11 @@ import DatePicker from "react-datepicker";
 import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft, faCircleCheck, faXmark } from "@fortawesome/free-solid-svg-icons"
-import { useState, forwardRef, useEffect} from 'react';
-import { API_URL } from '../../service/Common'
-import { recoilColorState } from "../../recoil/recoilColorState";
+import { useState, forwardRef, useEffect, useCallback} from 'react';
+import {API_URL} from '../../Common/Common'
+import { recoilColorState } from "../../recoil/colorState";
 import { useRecoilState } from "recoil";
-// import './diary.css'
+import './diary.css'
 
 
 const DiaryForm = () => {
@@ -19,10 +19,8 @@ const DiaryForm = () => {
   // colorPeeker
   const [recoilColor, setRecoilColor] = useRecoilState(recoilColorState);
   const defaultColor = { ...recoilColor };
-
   const [colorPeeker, setColorPeeker] = useState(defaultColor.color);
 
-  
   //false 새글정보 
   //true 수정정보 
   const [btnStatus, setBtnStatus] = useState(false);
@@ -33,38 +31,50 @@ const DiaryForm = () => {
     ,date:""
     ,color:""
   })
+
   const {title, content, date, color } = ViewData;
   const [list, setData] = useState([]);
 
+// 처음 호출
   useEffect(()=> {
-    //페이지 처음 들어올때 기본 날짜 설정 
     setViewData({
        date:new Date()
-      ,color:"#7A90E2"
+       ,color:colorPeeker
     })
     search();
-  },[])
+  },[]);
 
-  // colorPeeker
-  useEffect(() => {
+// 상태값이 바뀔때마다
+  useEffect(() =>{
+    console.log("color call")
     const tmpColor = { ...recoilColor };
     setColorPeeker(tmpColor.color);
-  },[recoilColor]);
+    let defaultDate = new Date();
+    if(ViewData.date != ""){
+        defaultDate = ViewData.date;
+    }
+    setViewData({
+      ...ViewData
+      ,color:tmpColor.color
+      ,date:defaultDate
+    })
+  },[recoilColor] )
 
   const search = () => {
-    axios.get(API_URL+ '/diary').then((response) => {
+    axios.get(API_URL+ '/diary')
+    .then((response) => {
     setData(response.data.data);
-    //setViewData(response.data.data)
     })
   }
 
   const defaultSetting = () => {
+    const tmpColor = { ...recoilColor };
     setViewData({
        id:""
       ,title:""
       ,content:""
       ,date:new Date()
-      ,color:"#7A90E2"
+      ,color: tmpColor.color
     })
   }
 
@@ -78,9 +88,10 @@ const DiaryForm = () => {
     const{name, value} = e.target;
     console.log(name,value);
     setViewData({
-      ...ViewData,
-      [name]: value
+      ...ViewData
+      ,[name]: value
     })
+    console.log(ViewData);
   };
 
   const submit = () => {
@@ -89,25 +100,33 @@ const DiaryForm = () => {
            title: ViewData.title
           ,content: ViewData.content
           ,date: ViewData.date
-          ,color:'#FFCCCC'
+          ,color: colorPeeker
         }).then((response) => {
           alert('완료');
           defaultSetting();
           search();
         })
-    }else{
-        if(window.confirm('수정하시겠습니까?')){
-          axios.patch(API_URL+ '/diary/' + ViewData.id,{
+        }else{
+          if(window.confirm('수정하시겠습니까?')){
+            console.log(ViewData);
+            axios.patch(API_URL+ '/diary/' + ViewData.id,{
             title:ViewData.title
             ,content: ViewData.content
             ,date: ViewData.date
-            ,color:'#FFCCCC'
-          }).then((response) => {
-            if(response.data.message === "successful"){
+            ,color: ViewData.color
+            }).then((response) => {
+          if(response.data.message === "successful"){
               search()
-              defaultSetting();
+              setViewData({
+                 id:""
+                ,title:""
+                ,content:""
+                ,date:new Date()
+                //,color:ViewData.color
+                ,color:"#5800FF"
+            })
               setBtnStatus(false);
-            } else {
+            }else{
               console.error(response.data.message)
             }
           })
@@ -117,12 +136,19 @@ const DiaryForm = () => {
     }
   };
 
-  const ResetBtnClick = () => {
+    const ResetBtnClick = () => {
     if(window.confirm('처음으로 돌아가시겠습니까?')) {
-      defaultSetting();
+      setViewData({
+       id:""
+      ,title:""
+      ,content:""
+      ,date:new Date()
+      ,color: "#5800FF"
+    })
       setBtnStatus(false);
     }
   };
+
 
   const Removediary = (idx) => {
     window.confirm("삭제하시겠습니까?");
@@ -134,24 +160,23 @@ const DiaryForm = () => {
       search();
     } else {
       alert('다시 선택해 주세요');
-    }
-  });
-}
+      }
+  })
+  };
 
   const Viewdiary = (item) => {
     console.log("박스클릭" + JSON.stringify(item));
     if(ViewData.id !== item._id){
       setViewData({
-        title : item.title
-        ,content : item.content
-        ,color : item.color
-        ,id : item._id
-        ,date : new Date(item.date)
+           title : item.title
+          ,content : item.content
+          ,color : item.color
+          ,id : item._id
+          ,date : new Date(item.date)
       })
       setBtnStatus(true);
-  }
-};
-
+    }
+  };
 // 슬라이드 세팅값
   const settings = {
     dots: true,
@@ -165,7 +190,7 @@ const DiaryForm = () => {
   return (
     <>
     <AllDiaryBox>
-      <DiaryContainer background={colorPeeker}>
+      <DiaryContainer style={{backgroundColor:ViewData.color}}>
         <PostTitle>
           <Datebox>
             <DatePicker
@@ -260,8 +285,6 @@ const DiaryContainer = styled.div`
   margin: 0 auto;
   border-radius: 15px;
   background-color: ${(props) => props.background};
-  //background-color: red;
-  //background-color: ${(props) => props.color};
   justify-content: center;
   padding: 27px;
 `
@@ -273,9 +296,7 @@ const PostTitle = styled.div`
   align-items: center;
   justify-content: end;
   margin-bottom: 10px;
-  //background-color: blue;
   left: 10px;
-
   & p {
     margin-right: 30px;
     text-align: center;
@@ -283,7 +304,6 @@ const PostTitle = styled.div`
     color: white;
     font-family: 'SB 어그로 M';
   }
-
   & .inputBox{
     width: 300px;
     height: 40px;
@@ -295,7 +315,6 @@ const PostTitle = styled.div`
     padding: 0 20px;
     margin-right: 10px;
     right: 60px;
-
     & input {
       width: 100%;
       font-family: 'SB 어그로 L';
@@ -305,17 +324,14 @@ const PostTitle = styled.div`
       }
     }
   }
-
   & .CheckIcon {
     width: 50px;
     height: 35px;
     color: white;
     position: relative;
     display: flex;
-    //background-color: aliceblue;
     right: 50px;
   }
-
   & .beforeIcon{
     display: flex;
     position: relative;
@@ -330,7 +346,6 @@ const PostTitle = styled.div`
 const WriteInnerBox = styled.div`
   width: 100%;
   height: 260px;
-  /* background-color: black; */
   border-radius: 10px;
   margin: 0 auto;
 `
@@ -339,7 +354,6 @@ const PostForm = styled.form`
   height: auto;
   margin: 0 auto;
   padding: 20px;
-
   & textarea {
     resize: none;
     width: 95%;
@@ -376,19 +390,15 @@ const Datebutton = styled.button`
 const Datebox = styled.div`
   width: 140px;
   height: 40px;
-  //background-color: yellow;
   position: relative;
   display: flex;
   right: 70px;
   
-
-
 `
 const AllDiaryBox = styled.div`
   width: 800px;
   position: relative;
   height: 800px;
-  //background-color: blueviolet;
   z-index: 10;
 `
 
@@ -399,7 +409,6 @@ const WhiteContainer = styled.div`
   background-color: #CED0E9;
   overflow: hidden;
   margin-top: 50px;
-
   & .sliderWrap {
     margin: 0 auto;
     padding-top: 10px;
@@ -411,7 +420,6 @@ const DiaryBoxContainer = styled.div`
   & .diaryWrap {
     margin: 20px 0;
   }
-
   & .dateBox {
     width: 261px;
     height: 30px;
@@ -422,7 +430,6 @@ const DiaryBoxContainer = styled.div`
     align-items: center;
     background-color: white;
     margin: 0 auto;
-
     & .XIcon {
       color: black;
       position: relative;
@@ -430,7 +437,6 @@ const DiaryBoxContainer = styled.div`
       bottom: 2px;
     }
   }
-
   & .titleBox {
     width: 265px;
     height: 55px;
