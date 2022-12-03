@@ -1,8 +1,6 @@
 import {RecoilRoot} from 'recoil';
 import { Routes, Route} from 'react-router-dom';
-import axios from 'axios';
 import PrivateRoute from "./privateRoute";
-import AuthService from './service/auth.service';
 import Onepage from './1_LoginPage';
 import TwoPage from './2_JoinPage'
 import ThirdPage from './3_CalendarPage';
