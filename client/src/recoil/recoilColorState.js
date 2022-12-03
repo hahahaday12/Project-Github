@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 
 const initialState = {
-  color: "#C4C4C4",
+  color: "#5800FF",
 };
 
 export const recoilColorState = atom({
