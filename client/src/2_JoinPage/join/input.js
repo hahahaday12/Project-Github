@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import { useState, useCallback } from 'react';
-import {  PwCheck, emailCheck} from '../../service/Common.js'
+import {  PwCheck, emailCheck} from '../../Common/Common'
 
 
 const Joininput = () => {
@@ -11,7 +11,7 @@ const navigate = useNavigate();
   // 이름 , 비밀번호, 이메일 , 비밀번호 확인 
 const [email, onChangeUserEmail] = useState("");
 const [name, onChangeUserName] = useState("");
-const [password, onChangeUserPasswrod] = useState("");
+const [password, onChangeUserPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
   //비밀번호 유효성 검사 
 const [passwordCheck, setPasswordCheck] = useState(false);
@@ -28,9 +28,9 @@ const register = (e) => {
   };
 
   const data = {
-    id: email
-    ,name: name
-    ,password: password
+    id: email,
+    name: name,
+    password: password
   }
   
   axios.post('http://kai.dahyeon.us:10200/user',data)
@@ -49,7 +49,6 @@ const onSignHandler = useCallback((e) => {
 
   if (!emailCheck(email)) {
     if (!alert('이메일 형식이 일치하지 않습니다')) {
-      onChangeUserEmail('');
       return statusCheck;     
     }
   }
@@ -61,7 +60,6 @@ const onSignHandler = useCallback((e) => {
 
   if (!PwCheck(password)) {
     if (!alert('비밀번호 형식이 일치하지 않습니다.(대문자, 소문자, 특수문자 포함)')) {
-      setPasswordCheck('');
       return statusCheck;
     }
   }
@@ -96,7 +94,7 @@ const onSignHandler = useCallback((e) => {
               placeholder="비밀번호를 입력하세요"
               autoComplete="off"
               value={password}
-              onChange={(e) => {onChangeUserPasswrod(e.target.value)}}
+              onChange={(e) => {onChangeUserPassword(e.target.value)}}
               />
           </div>
           <div>
@@ -192,7 +190,7 @@ const Linkbox = styled.div`
   margin-left: 150px;
   width: 150px;
   height: 100px;
-  background-color: white;
+  background-color: #8D9EFF;
   text-decoration: none;
   display: flex;
   position: absolute;
